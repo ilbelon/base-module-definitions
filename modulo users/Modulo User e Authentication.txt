@@ -127,19 +127,47 @@ AUTHORIZATION
 		LdlRolesService
 			-ldlPermissionsService
 
-			+createUserRole()
-			+updateUserRole()
-			+getUserRole()
+			+createUserRole(LdlUserRolesDto userRoles)
+			+updateUserRole(LdlUserRolesDto userRoles)
+			+getUserRole(Long id)
 			+getUserRoleList()
-			+deleteUserRole()
+			+deleteUserRole(Long id)
 		LdlPermissionsService
 			+createUserPermission()
 			+updateUserPermission()
 			+getUserPermission()
 			+getUserPermissionList()
 			+deleteUserPermission()
+	CONTROLLER:
+		LdlUserRoleController
+			+createLdlUserRole(LdlUserRolesDto userRoles)
+			+getLdlUserRole(Long id)
+			+getLdlUserRoleList()
+			+updateLdlUserRole(LdlUserRolesDto userRoles)
+			+replaceLdlUserRole(LdlUserRolesDto userRoles)
+			+deleteLdlUserRole(Long id)
 	TESTING
 		-LdlUserRolesControllerTests
+			-createLdlUserRole(LdlUserRolesDto userRoles)
+				-assert dtovalidation
+				-assert userRole già presente -> standard exception "already exist"
+				-assert inserimento e ritorna la response entity con l'oggetto creato
+			+getLdlUserRole(Long id)
+				-assert userRoleTrovato ->controllo response entity
+				-assert userRoleNonTrovato -> standard exception "404 Not Found"
+				-assert se esiste solo 1 -> eccezzione più di un risultato
+			+getLdlUserRoleList()
+				-assert trovatiTutti e verificare response entity
+				-assert trovatiConPaginazioni e verificare response entity
+			+updateLdlUserRole(LdlUserRolesDto userRoles)
+				-assert logic validation dto
+				-assert update e ritorna la response entity
+				-assert update userRole campo duplicato -> standard exception "already exist"
+			+replaceLdlUserRole(LdlUserRolesDto userRoles) ??? ha senso avere sia il replace che l'update? in quali casi si userebbe il replace?
+			+deleteLdlUserRole(Long id)
+				-assert userRoleTrovato
+				-assert userRoleNonTrovato -> standard exception "404 Not Found"
+				-assert dopo cancellazione getUserRole(Long id) deve risultare vuoto
 		-LdlUserRolesServiceTests
 			-createUserRoles()
 				-assert logic validation dto

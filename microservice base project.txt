@@ -55,6 +55,7 @@ Naming convection
 		Nome+Service 
 		*in base alle esigenze
 		*metodi 1a1 col controller
+		*(ogni funzione daal controller deve validare gli oggetti dto in arrivo)
 	Controller
 		Nome+Controller
 		*metodi controller
@@ -86,3 +87,10 @@ Standard folder project
 	-entity
 	-migrations
 -core
+-test
+	-modules
+		-users
+			-serviceTest
+			-repositoryTest
+			-controllerTest
+			-mapperTest (?)
