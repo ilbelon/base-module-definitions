@@ -1,0 +1,206 @@
+Modulo User e Authentication
+
+Naming Conventions
+	OneToOne
+	OneToMany
+	ManyToOne
+	ManyToMany 
+
+DB Tables
+	ldl_user_states*
+		id 
+		name 
+		description
+
+	ldl_user_missions*
+		id
+		name
+		description
+		fk_attachment (icona)
+		reward
+		attempts
+		time_beetwen_attempts
+
+	ldl_users_ldl_user_missions*
+		id
+		fk_ldl_user_missions
+		fk_ldl_users
+		completed_date
+		completed
+		attempts_made
+		last_failed_date
+
+	ldl_users*
+		id
+		fk_ldl_user_states
+		fk_ldl_user_stats
+		fk_ldl_user_privacy
+		fk_ldl_active_services (ex servizi_abilitati Many2Many vdc_services)
+		fk_attachment_profile_image (utente normale?)
+		cognito_id
+		name
+		surname
+		email
+		username
+		nickmane?
+		freezed (cancellazione logica ex 'active')
+		token_mobile_app (ex token_device)
+		diamonds_qty
+		diamonds_value (? valutare )
+		affiliation_name (ex affiliazione)
+
+	ldl_pesonal_trainer
+		id
+		fk_ldl_user
+		fk_attachment_personal_trainer_image (utente normale?)
+		fk_attachment_presentation_video
+		personal_trainer_description
+		link_calendar_lesson
+		rating_link (ex link_testimonianze)
+
+	ldl_user_roles*
+		id
+		fk_permission
+		name
+		description
+
+	ldl_user_permissions*
+		id
+		name
+		description
+
+	ldl_users_stats*
+		id
+		registration_date(insert_date)
+		fk_referral_ldl_user ?
+		fk_referral_secondario_ldl_user ?
+		fk_referral_sorgente_ldl_user ?
+		checkFacebook
+		last_login_date
+		last_mobile_app_login (ex last_device_login)
+		last_mobile_app_activity (ex last_device_activity)? sentire simone per l'utilità
+		last_mail_sent_date (ex last_mail_sent)
+		last_view_notification_date
+		last_bundle_offer_date
+		notes (note dell'utente scritte da chi fa supporto/admin)
+
+	ldl_users_privacy*
+		id
+		privacy
+		cookies
+		terms
+		unsubscribe_mail_token
+		is_unsubscribed_mail
+
+	ldl_user_badges*
+		id
+		fk_attachment_active_icon
+		fk_attachment_disable_icon
+		name
+		description
+
+	ldl_users_ldl_user_badges*
+		fk_ldl_user_badges
+		fk_ldl_users
+		active?
+
+	ldl_user_stages* (ex tappa percorso guidato)
+		id
+		fk_stage_attachment
+		fk_quiz
+		name
+		path_name
+		price
+
+	ldl_users_ldl_user_badges*
+		fk_ldl_user_stages
+		fk_ldl_users
+		completed
+		completed_date
+		video_time
+
+AUTHORIZATION
+	ENTITIES:
+		LdlUserRoles (ldl_user_roles)
+		LdlUserPermissions (ldl_user_perissions)
+	SERVICES:
+		LdlRolesService
+			-ldlPermissionsService
+
+			+createUserRole()
+			+updateUserRole()
+			+getUserRole()
+			+getUserRoleList()
+			+deleteUserRole()
+		LdlPermissionsService
+			+createUserPermission()
+			+updateUserPermission()
+			+getUserPermission()
+			+getUserPermissionList()
+			+deleteUserPermission()
+	TESTING
+		-LdlUserRolesControllerTests
+		-LdlUserRolesServiceTests
+			-createUserRoles()
+				-assert logic validation dto
+				-assert userRoleGiaPresente -> standard exception "already exist"
+				-assert inserimento e ritorna la response entity
+				-assert inserimento userRole presente -> standard exception "already exist"
+			-getUserRole();
+				-assert trovatiTutti 
+				-assert trovatiConPaginazioni
+			-getUserRole(Long id);
+				-assert userRoleTrovato
+				-assert userRoleNonTrovato -> standard exception "404 Not Found"
+				-assert se esiste solo 1
+			-updateUserRoles()
+				-assert logic validation dto
+				-assert update e ritorna la response entity
+				-assert update userRole campo duplicato -> standard exception "already exist"
+			-deleteUserRole(Long id);
+				-assert userRoleTrovato
+				-assert userRoleNonTrovato -> standard exception "404 Not Found"
+				-assert dopo cancellazione getUserRole(Long id) deve risultare vuoto 
+		-LdlUserRolesRepositoryTests
+
+		
+
+USERS
+	ENTITIES:
+		ldl_users
+		ldl_users_privacy
+		ldl_stats
+		ldl_user_states
+	SERVICES:
+		LdlUserService
+			-ldlUserPrivacyService
+			-ldlUserStatsService
+			-ldlUserStateService
+
+			+createUser()
+			+updateUser()
+			+getUser()
+			+getUserList()
+			+deleteUser()
+
+		LdlUserPrivacyService
+			+createUserPrivacy()
+			+updateUserPrivacy()
+			+getUserPrivacy()
+		LdlUserStatsService
+			+createUserStats()
+			+updateUserStats()
+			+getUserStats()
+		LdlUserStateService
+			+createUserState()
+			+updateUserState()
+			+getUserState()
+			+getUserStateList()
+			+deleteUserState()
+USER_FLOW
+	ENTITIES:
+		ldl_user_missions
+		ldl_user_stages
+		ldl_user_badges
+AUTHENTICATION
+	SERVICES:
